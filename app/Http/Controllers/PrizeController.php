@@ -12,6 +12,8 @@ class PrizeController extends Controller
     {
         $prizes = Prize::latest()->get();
 
+        // dd($prizes);
+
         return Inertia::render('Prizes/Index', [
             'prizes' => $prizes,
         ]);
@@ -61,7 +63,8 @@ class PrizeController extends Controller
             'name'          => $request->name,
             'description'   => $request->description,
             'stock'         => $request->stock,
-            'initial_stock' => $prize->initial_stock === 0 ? $request->stock : $prize->initial_stock,
+            // 'initial_stock' => $prize->initial_stock === 0 ? $request->stock : $prize->initial_stock,
+            'initial_stock' => $request->stock,
             'is_claimed'    => $request->stock <= 0,
         ]);
 

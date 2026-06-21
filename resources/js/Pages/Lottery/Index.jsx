@@ -172,13 +172,17 @@ export default function LotteryIndex({ guests, prizes, results: initialResults }
     clearTimeout(autoStopRef.current)
     setSpinning(false)
 
+    // Reel position di sini HANYA untuk efek visual selagi menunggu response backend.
+    // Backend (LotteryController::pick) yang menentukan pemenang sebenarnya
+    // (termasuk logika kupon fix), jadi kita TIDAK BOLEH percaya posisi reel
+    // sebagai hasil akhir.
     const activePool = pool ?? spinPoolRef.current
     const idx = (currentIdxRef.current - 1 + activePool.length) % activePool.length
-    const winnerGuest = activePool[idx]
+    const visualGuest = activePool[idx]
 
-    setReelValue(winnerGuest.code)
+    setReelValue(visualGuest.code) // sementara, akan ditimpa begitu response datang
 
-    // Kirim ke backend
+    // Kirim ke backend — backend yang menentukan pemenang aktual
     fetch('/lottery/pick', {
       method: 'POST',
       headers: {
@@ -188,7 +192,6 @@ export default function LotteryIndex({ guests, prizes, results: initialResults }
         ),
       },
       body: JSON.stringify({
-        guest_id: winnerGuest.id,
         prize_id: selectedPrize.id,
       }),
     })
@@ -196,14 +199,23 @@ export default function LotteryIndex({ guests, prizes, results: initialResults }
       .then(data => {
         if (!data.success) {
           setError(data.message)
+          // reset reel karena spin ini tidak menghasilkan pemenang
+          setReelValue('-------')
           return
         }
+
+        // ✅ PENTING: pakai data.guest dari backend sebagai sumber kebenaran,
+        // bukan visualGuest hasil reel lokal — supaya kupon fix / pemenang
+        // sebenarnya yang tampil, bukan tamu hasil shuffle reel di frontend.
+        const actualWinner = data.guest
+
+        setReelValue(actualWinner.code)
         decrementPrizeStock(selectedPrize.id)
-        setWinner(winnerGuest)
+        setWinner(actualWinner)
         setHistory(prev => [{
-          guest: winnerGuest,
+          guest: actualWinner,
           prize: selectedPrize,
-          guest_id: winnerGuest.id,
+          guest_id: actualWinner.id,
           won_at: new Date().toISOString(),
         }, ...prev])
       })
