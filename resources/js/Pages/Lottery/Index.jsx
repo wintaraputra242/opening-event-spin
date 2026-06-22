@@ -800,14 +800,11 @@ export default function LotteryIndex({ guests, prizes, results: initialResults }
                     {isBulkMode ? '⚡ Undi Semua Sekaligus' : '▶ Mulai Undian'}
                   </button>
                 ) : (
-                  !isBulkMode && (
-                    <button
-                      onClick={handleSlotManualStop}
-                      className="flex-1 py-4 bg-red-500 text-white text-base font-bold rounded-xl hover:bg-red-400 transition-colors shadow-lg animate-pulse"
-                    >
-                      ■ Stop Manual
-                    </button>
-                  )
+                  <div className="flex-1 py-4 bg-stone-800 rounded-xl text-center">
+                    <p className="text-blue-400 text-base font-bold animate-pulse">
+                      🎰 Sedang Mengundi...
+                    </p>
+                  </div>
                 )}
               </div>
             </div>

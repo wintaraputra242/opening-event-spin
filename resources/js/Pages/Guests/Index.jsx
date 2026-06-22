@@ -44,18 +44,18 @@ export default function GuestsIndex({ guests }) {
   const [showDeleteModal, setShowDeleteModal] = useState(null)
 
   const totalGuests = guests.length
-  const pending = guests.filter(g => !g.is_present && !g.code).length
-  const present = guests.filter(g => g.is_present).length
-  const absent = guests.filter(g => !g.is_present && g.code).length
+  const pending = guests.filter(g => g.status === 'pending').length
+  const present = guests.filter(g => g.status === 'present').length
+  const absent = guests.filter(g => g.status === 'absent').length
 
   const filtered = guests.filter(g => {
     const matchSearch = search === '' || [g.name, g.phone, g.office, g.code]
       .some(v => v?.toLowerCase().includes(search.toLowerCase()))
 
     if (!matchSearch) return false
-    if (activeTab === STATUS_PENDING) return !g.is_present && !g.code
-    if (activeTab === STATUS_PRESENT) return g.is_present
-    if (activeTab === STATUS_ABSENT) return !g.is_present && g.code
+    if (activeTab === STATUS_PENDING) return g.status === 'pending'
+    if (activeTab === STATUS_PRESENT) return g.status === 'present'
+    if (activeTab === STATUS_ABSENT) return g.status === 'absent'
     return true
   })
 
@@ -69,7 +69,7 @@ export default function GuestsIndex({ guests }) {
     { key: STATUS_ALL, label: 'Semua', count: totalGuests },
     { key: STATUS_PENDING, label: 'Menunggu Konfirmasi', count: pending },
     { key: STATUS_PRESENT, label: 'Hadir', count: present },
-    // { key: STATUS_ABSENT, label: 'Tidak Hadir', count: absent },
+    { key: STATUS_ABSENT, label: 'Tidak Hadir', count: absent },
   ]
 
   const [showPresenceModal, setShowPresenceModal] = useState(null)

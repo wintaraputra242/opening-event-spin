@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Imports\GuestsImport;
 use App\Exports\GuestsExport;
+use App\Models\LotteryResult;
 use Maatwebsite\Excel\Facades\Excel;
 
 class GuestController extends Controller
@@ -84,6 +85,9 @@ class GuestController extends Controller
 
     public function destroy(Guest $guest)
     {
+        // Hapus hasil undian yang berelasi dulu
+        LotteryResult::where('guest_id', $guest->id)->delete();
+
         $guest->delete();
 
         return redirect()->route('guests.index')->with('success', 'Tamu berhasil dihapus.');

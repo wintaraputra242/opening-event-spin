@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LotteryResult;
 use App\Models\Prize;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -73,6 +74,9 @@ class PrizeController extends Controller
 
     public function destroy(Prize $prize)
     {
+        // Hapus hasil undian yang berelasi dulu
+        LotteryResult::where('prize_id', $prize->id)->delete();
+
         $prize->delete();
 
         return redirect()->route('prizes.index')->with('success', 'Hadiah berhasil dihapus.');
