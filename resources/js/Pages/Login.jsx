@@ -17,21 +17,21 @@ export default function Login() {
       <div className="flex min-h-screen bg-stone-100 font-sans">
 
         {/* Left Panel */}
-        <div className="hidden md:flex w-72 flex-shrink-0 bg-stone-900 flex-col justify-center px-9 py-12">
-          <p className="text-xs font-semibold tracking-widest text-stone-500 uppercase mb-1">
+        <div className="hidden md:flex w-72 flex-shrink-0 bg-[#0F1B2D] flex-col justify-center px-9 py-12">
+          <p className="text-xs font-semibold tracking-widest text-white uppercase mb-1">
             Event Opening
           </p>
           <h1 className="text-2xl font-bold text-stone-50 tracking-tight mb-4">
             Admin Panel
           </h1>
-          <p className="text-sm text-stone-500 leading-relaxed mb-9">
+          <p className="text-sm text-white leading-relaxed mb-9">
             Kelola tamu undangan, hadiah, dan undian dalam satu tempat.
           </p>
 
           <div className="flex flex-col gap-3">
             {['Data Tamu', 'Data Hadiah', 'Spin Undian'].map((item) => (
-              <div key={item} className="flex items-center gap-2.5 text-sm text-stone-500">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-300 flex-shrink-0" />
+              <div key={item} className="flex items-center gap-2.5 text-sm text-white">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#4A9FFF] flex-shrink-0" />
                 {item}
               </div>
             ))}
@@ -43,12 +43,12 @@ export default function Login() {
           <div className="w-full max-w-sm bg-white rounded-2xl border border-stone-200 p-10">
 
             {/* Accent bar */}
-            <div className="w-8 h-0.5 bg-amber-300 rounded mb-6" />
+            <div className="w-8 h-0.5 bg-[#4A9FFF] rounded mb-6" />
 
             <h2 className="text-xl font-bold text-stone-900 tracking-tight mb-1">
               Masuk ke sistem
             </h2>
-            <p className="text-sm text-stone-500 mb-8">
+            <p className="text-sm text-white mb-8">
               Masukkan token akses untuk melanjutkan.
             </p>
 
@@ -78,7 +78,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={processing}
-                className="w-full mt-6 py-2.5 bg-stone-900 hover:bg-stone-700 disabled:bg-stone-400 text-stone-50 text-sm font-semibold rounded-lg transition cursor-pointer disabled:cursor-not-allowed"
+                className="w-full mt-6 py-2.5 bg-blue-500 hover:bg-blue-700 disabled:bg-stone-400 text-stone-50 text-sm font-semibold rounded-lg transition cursor-pointer disabled:cursor-not-allowed"
               >
                 {processing ? 'Memproses...' : 'Masuk →'}
               </button>

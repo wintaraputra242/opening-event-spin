@@ -31,34 +31,83 @@ class FixedWinnerController extends Controller
   /**
    * Cari tamu berdasarkan nomor telepon (dipanggil dari form via fetch/axios)
    */
-  public function findGuestByPhone(Request $request)
+  // public function findGuestByPhone(Request $request)
+  // {
+  //   $request->validate([
+  //     'phone' => 'required|string',
+  //   ]);
+
+  //   $guest = Guest::where('phone', $request->phone)->first();
+
+  //   if (!$guest) {
+  //     return response()->json([
+  //       'success' => false,
+  //       'message' => 'Nomor telepon tidak ditemukan di data tamu.',
+  //     ], 404);
+  //   }
+
+  //   // Cek apakah tamu ini sudah terdaftar sebagai kupon fix sebelumnya
+  //   $alreadyFixed = FixedWinner::where('guest_id', $guest->id)->with('prize')->first();
+
+  //   if ($alreadyFixed) {
+  //     return response()->json([
+  //       'success' => false,
+  //       'message' => "Tamu ini sudah terdaftar sebagai kupon fix untuk hadiah \"{$alreadyFixed->prize->name}\".",
+  //     ], 422);
+  //   }
+
+  //   return response()->json([
+  //     'success' => true,
+  //     'guest'   => $guest,
+  //   ]);
+  // }
+
+  /**
+   * Cari tamu berdasarkan nomor telepon ATAU nama.
+   * Kalau input berupa angka → cari by phone.
+   * Kalau input berupa teks → cari by nama (partial, case-insensitive).
+   * Kalau input campuran angka & huruf → cari keduanya.
+   */
+  public function findGuest(Request $request)
   {
     $request->validate([
-      'phone' => 'required|string',
+      'query' => 'required|string',
     ]);
+    
+    $searchQuery = trim($request->input('query'));
+    
+    $guests = Guest::where('phone', $searchQuery)
+      ->orWhere('name', 'LIKE', '%' . $searchQuery . '%')
+      ->limit(5)
+      ->get();
 
-    $guest = Guest::where('phone', $request->phone)->first();
-
-    if (!$guest) {
+    if ($guests->isEmpty()) {
       return response()->json([
         'success' => false,
-        'message' => 'Nomor telepon tidak ditemukan di data tamu.',
+        'message' => 'Tamu tidak ditemukan. Coba dengan nama lengkap atau nomor telepon.',
       ], 404);
     }
 
-    // Cek apakah tamu ini sudah terdaftar sebagai kupon fix sebelumnya
-    $alreadyFixed = FixedWinner::where('guest_id', $guest->id)->with('prize')->first();
+    // Attach info apakah masing-masing tamu sudah terdaftar sebagai kupon fix
+    $results = $guests->map(function ($guest) {
+      $alreadyFixed = FixedWinner::where('guest_id', $guest->id)
+        ->with('prize')
+        ->first();
 
-    if ($alreadyFixed) {
-      return response()->json([
-        'success' => false,
-        'message' => "Tamu ini sudah terdaftar sebagai kupon fix untuk hadiah \"{$alreadyFixed->prize->name}\".",
-      ], 422);
-    }
+      return [
+        'id'           => $guest->id,
+        'name'         => $guest->name,
+        'phone'        => $guest->phone,
+        'office'       => $guest->office,
+        'code'         => $guest->code,
+        'is_present'   => $guest->is_present,
+        'fixed_for'    => $alreadyFixed ? $alreadyFixed->prize->name : null,
+      ];
+    });
 
     return response()->json([
       'success' => true,
-      'guest'   => $guest,
+      'guests'  => $results,
     ]);
   }
 

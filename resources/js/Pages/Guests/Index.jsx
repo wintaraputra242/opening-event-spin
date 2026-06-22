@@ -26,10 +26,10 @@ function StatCard({ count, label, color }) {
 }
 
 function StatusBadge({ guest }) {
-  if (!guest.is_present && !guest.code) {
+  if (guest.status === 'pending') {
     return <span className="text-amber-500 text-sm font-medium">Menunggu Konfirmasi</span>
   }
-  if (guest.is_present) {
+  if (guest.status === 'present') {
     return <span className="text-emerald-600 text-sm font-medium">Konfirmasi Hadir</span>
   }
   return <span className="text-red-500 text-sm font-medium">Konfirmasi Tidak Hadir</span>

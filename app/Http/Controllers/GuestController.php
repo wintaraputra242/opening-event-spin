@@ -40,6 +40,7 @@ class GuestController extends Controller
             'office'     => $request->office,
             'code'       => $request->code ? strtoupper($request->code) : null,
             'is_present' => false,
+            'status'     => 'pending',
         ]);
 
         return redirect()->route('guests.index')->with('success', 'Tamu berhasil ditambahkan.');
@@ -65,16 +66,17 @@ class GuestController extends Controller
             'name'       => 'required|string|max:255',
             'phone'      => 'nullable|string|max:20',
             'office'     => 'nullable|string|max:255',
-            'code'       => 'nullable|string|max:50|unique:guests,code,' . $guest->id . '|required_if:is_present,true',
-            'is_present' => 'boolean',
+            'code'       => 'nullable|string|max:50|unique:guests,code,' . $guest->id . '|required_if:status,present',
+            'status'     => 'required|string',
         ]);
 
         $guest->update([
             'name'       => $request->name,
             'phone'      => $request->phone,
             'office'     => $request->office,
-            'code'       => $request->code && $request->is_present ? strtoupper($request->code) : null,
-            'is_present' => $request->is_present,
+            'code'       => $request->code && $request->status === 'present' ? strtoupper($request->code) : null,
+            'is_present' => $request->status === 'present' ? true : false,
+            'status'     => $request->status
         ]);
 
         return redirect()->route('guests.index')->with('success', 'Data tamu berhasil diperbarui.');

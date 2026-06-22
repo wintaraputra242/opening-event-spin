@@ -143,7 +143,7 @@ export default function PrizesCreate() {
               <button
                 type="submit"
                 disabled={processing}
-                className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-stone-900 rounded-xl hover:bg-stone-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-blue-500 rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {processing ? 'Menyimpan...' : 'Simpan Hadiah'}
               </button>
